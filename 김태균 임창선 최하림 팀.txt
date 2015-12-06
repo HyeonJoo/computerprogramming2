@@ -2,6 +2,7 @@
 #include<list>
 #include<string>
 #include<xstring>
+#include<fstream>
 using namespace std;
 
 static int Stnum = 0;
@@ -15,7 +16,7 @@ typedef struct Writing{
 
 
 void main(){
-	
+
 	list<W>Wlist; //위에서 Writing을 W로 정의했음. W 리스트를 만들었다!
 	list<W>::iterator iterEnd = Wlist.end(); // 반복자 iterator 정의. 뭐 찾을때나 삭제할 때 필요!
 	int menu; //메뉴 선택할 변수
@@ -23,7 +24,8 @@ void main(){
 	while (1){
 		//임시로 쓸 변수들 
 	B:;
-		string tmpName; string tmpBuf;	
+		string tmpName; string tmpBuf;
+
 		cout << "**********************\n";
 		cout << "1.게시글 쓰기\n"; //데이터 삽입
 		cout << "2.쓴 게시글\n"; //데이터 출력
@@ -36,8 +38,9 @@ void main(){
 
 		if (menu == 1){
 			Stnum++;
+	
 			cout << "*******게시글 작성*******\n";
-			
+
 			Nm++; //글 번호
 			cout << "작성자 입력:";		fflush(stdin); getline(cin, tmpName, '\n');
 			cout << "게시글 작성:";		fflush(stdin);	getline(cin, tmpBuf, '\n');
@@ -49,6 +52,7 @@ void main(){
 		}
 		else if (menu == 2){
 		A:;
+		
 			if (Stnum == 0){
 				cout << "저장된 데이터가 없습니다 데이터를 입력하세요" << endl;
 				goto B;
@@ -65,7 +69,7 @@ void main(){
 				}
 			} //작성자 별 게시글 찾기 
 			else if (tmp == 2){
-				
+
 				cout << "검색할 글쓴이의 이름을 입력하시오:";
 				string tmpname = "";
 				fflush(stdin); cin >> tmpname;
@@ -78,7 +82,8 @@ void main(){
 				}//for over
 			}//tmp==2
 			else if (tmp == 3){
-				 
+
+				
 				cout << "검색할 게시글 번호를 입력하시오:";		int num;	fflush(stdin); cin >> num;
 				for (list<W>::iterator Pos = Wlist.begin(); Pos != iterEnd; Pos++){
 					if (Pos->Num == num){
@@ -106,51 +111,40 @@ void main(){
 			if (nm3 == 1){
 				cout << "전체 글을 삭제합니다! " << endl;
 				list<W>::iterator iterPos = Wlist.begin();
-				cout << iterPos->Num << "번째 게시글을 삭제합니다!" << endl;
-				Wlist.erase(iterPos, ++Wlist.begin());
+				Wlist.erase(iterPos, Wlist.end());
 				cout << endl;
 			}
 			else if (nm3 == 2){
-				cout << "1. 입력한 작성자 게시글 삭제  2. 입력한 번호 게시글 삭제" << endl;
-				cout << "입력:"; fflush(stdin); cin >> nm3;
-				if (nm3 == 1){
-					string nametmp;					
-					cout << "삭제할 게시글 작성자 이름:"; fflush(stdin); getline(cin, nametmp, '\n');
-					for (list<W>::iterator it = Wlist.begin(); it != iterEnd; it++){
-						if (it->Name == nametmp){
-							it = Wlist.erase(it);
-						}
-						else{
-							cout << "입력하신 이름은 존재하지 않습니다" << endl;
-							break;
-						}//존재하지 않을때
-					}//for문 
-					
-				}//이름별 삭제
-				else if (nm3 == 2){
-					int nm32 = 0;
-					cout << "삭제할 게시글 번호:"; fflush(stdin); cin >> nm32;
-					for (list<W>::iterator pt = Wlist.begin(); pt != iterEnd; pt++){
-						if (pt->Num == nm32){
-							pt = Wlist.erase(pt);
-						}
-						else{
-							cout << "입력하신 게시글 번호는 존재하지 않습니다" << endl;
-							break;
-						}
-					}//for문
-				
-				}//게시글 번호별 삭제
-			}//지정 삭제일 경우
-			else{
-				cout << "잘못 입력하셨습니다\n";
-			}
-			/*
+				cout << "입력한 작성자 게시글 삭제" << endl;
 
-			*/
+				string nametmp;
+				cout << "삭제할 게시글 작성자 이름:"; fflush(stdin); getline(cin, nametmp, '\n');
+				for (list<W>::iterator it = Wlist.begin(); it != iterEnd; it++){
+					if (it->Name == nametmp){
+						cout << "작성자" << it->Name << "의 게시글을 삭제합니다!\n";
+						it = Wlist.erase(it);
+						break;
+					}
+				
+				}//for문 
+
+			}//이름별 삭제
+	else{
+			cout << "잘못 입력하셨습니다\n";
 		}
-		else if (menu == 4){
+
+		}//지정 삭제일 경우
+		
+
+			else if (menu == 4){
 			cout << "프로그램을 종료합니다" << endl;
+			ifstream read("text.txt");
+			ofstream write("text.txt");
+			for (list<W>::iterator wp = Wlist.begin(); wp != iterEnd; wp++){
+				write << "게시글 번호: " << wp->Num << endl << "작성자: " << wp->Name << endl << "게시글: " << wp->Buf<<endl;
+			}
+			read.close();
+			write.close();
 			Wlist.clear(); //리스트 없애기 
 			//delete
 			system("pause"); system("cls");
@@ -159,7 +153,7 @@ void main(){
 		else{
 			cout << "메뉴를 다시 입력하시오\n";
 		}
-
+		//fopen("text.txt")
 
 
 	}//while over
